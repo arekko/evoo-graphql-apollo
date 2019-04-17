@@ -1,28 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useQuery } from "react-apollo-hooks";
+import { GET_ARTICLES } from "./graphql-queries";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+
+
+
+
+
+const App: React.FC<{}> = () => {
+  const { data, error, loading } = useQuery(GET_ARTICLES, {
+    variables: { offset: 0, limit: 10 }
+  });
+  console.log(data, loading);
+  if (loading) {
+    return <div>loading...</div>;
   }
-}
+
+  if (error) {
+    return <div>something goes wrong...!</div>;
+  }
+
+  return (
+    <div>
+      <ul>
+        {data.getArticles.map((item: any) => (
+          <li key={item.id}>{item.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default App;
